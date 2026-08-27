@@ -2,3 +2,4 @@ venv
 w-venv
 .env
 .idea
+__pycache__
