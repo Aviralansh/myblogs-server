@@ -1,2 +1,4 @@
 venv
 w-venv
+.env
+.idea
