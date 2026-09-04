@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi import Depends, HTTPException, status
 from pydantic_models.models import addPost, verification
 from database.db import getDB, MyBlogs, BlogContent
@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from routes.auth import is_authorized
 from datetime import date
 from sqlalchemy.exc import IntegrityError
+from middleware.middleware import limiter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,8 +15,10 @@ router = APIRouter()
 
 
 #### ROUTE ONLY FOR TESTING
+
 @router.post('/check_pswd')
-def addBlog(username: str, password: str):
+@limiter.limit("3/day")
+def addBlog(username: str, password: str, request: Request):
 
     authorized = is_authorized(username, password)
 
@@ -25,7 +28,7 @@ def addBlog(username: str, password: str):
 
     return {"authorised"}
 
-
+#---------------------------------------------------------------------------------------------------------------------------------
 @router.post('/add_blog', status_code=status.HTTP_201_CREATED)
 def addBlog(creds : verification, postContent : addPost, db : Session = Depends(getDB)):
 

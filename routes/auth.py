@@ -9,7 +9,7 @@ def set_new_password(password: str):
     new_password = password.encode('utf-8')
     
     hashed_pswd = bcrypt.hashpw(new_password, salt).decode('utf-8')
-    
+
     
     env_file = find_dotenv()
     set_key(env_file, "PSWD", hashed_pswd)
